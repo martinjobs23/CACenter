@@ -54,7 +54,12 @@ public class CertRequestService {
         //获取HASH值
         String username = serial.substring(0,32);
 
-        int flag = Integer.parseInt(System.getProperty("certApply"));
+        int flag = 0;
+        try {
+            flag = Integer.parseInt(fileConfigUtil.load("desktop.properties","certApply"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if (flag == 0 ){
             //管理员同意注册
             if (is_handle ==1 ){
@@ -76,9 +81,9 @@ public class CertRequestService {
                 //生成私钥命令
                 String createKeyPar =gmssl + " ecparam -genkey -name sm2p256v1 -out " + exeDir   + username + ".key";
                 //生成请求文件命令
-                String createCSRPar =gmssl + " req -new -sm3 -key \""+ exeDir +username+".key\" -out \""+ exeDir +username+".req\" -subj /CN="+username+"/C=CN/ST=BJ/L=NCEPU/O=CEIT/OU=CEIT";
+                String createCSRPar =gmssl + " req -new -sm3 -key "+ exeDir +username+".key -out "+ exeDir +username+".req -subj /CN="+username+"/C=CN/ST=BJ/L=NCEPU/O=CEIT/OU=CEIT";
                 //生成证书命令
-                String createCERPar = gmssl + " ca -md sm3 -in \""+ exeDir +username+".req\" -out "+ exeDir +username+".crt -days 3650 -batch";
+                String createCERPar = gmssl + " ca -md sm3 -in "+ exeDir +username+".req -out "+ exeDir +username+".crt -days 3650 -batch";
                 //生成私钥
                 CommandUtil.exeCommand(createKeyPar);
                 String pkiKeycontent = FileUtil.readFile(exeDir + username + ".key");
@@ -228,8 +233,7 @@ public class CertRequestService {
     }
 
     //软件注册
-    public Result soft_Register(SoftRegisterRequest request) {
-        String soft_hash = request.getSoftHash();
+    public Result softRegister(String soft_hash) {
         //判断软件是否已在软件仓库
         String selectSql = "select sw_name FROM soft_cert where sw_hash = ?";
         List<Map<String,Object>> list = jdbcUtil.executeQuery(selectSql,soft_hash);
@@ -255,23 +259,25 @@ public class CertRequestService {
         String createCSRPar =gmssl + " req -new -sm3 -key \""+ exeDir +soft_hash+".key\" -out \""+ exeDir +soft_hash+".req\" -subj /CN="+soft_hash+"/C=CN/ST=BJ/L=NCEPU/O=CEIT/OU=CEIT";
         //生成证书命令
         String createCERPar = gmssl + " ca -md sm3 -in \""+ exeDir +soft_hash+".req\" -out "+ exeDir +soft_hash+".crt -days 3650 -batch";
+
+
         //生成私钥
         CommandUtil.exeCommand(createKeyPar);
         String pkiKeycontent = FileUtil.readFile(exeDir + soft_hash + ".key");
         if (pkiKeycontent==null||pkiKeycontent.equals("")){
-            return new Result("私钥生成失败",400,"error");
+            return new Result("error",400,"私钥生成失败");
         }
         //生成请求文件
         CommandUtil.exeCommand(createCSRPar);
         String reqcontent =  FileUtil.readFile(exeDir + soft_hash + ".req");
         if (reqcontent==null||reqcontent.equals("")){
-            return new Result("证书请求生成失败",400,"error");
+            return new Result("error",400,"证书请求生成失败");
         }
         //生成证书
         CommandUtil.exeCommand(createCERPar);
         String crtcontent =  FileUtil.readFile(exeDir + soft_hash + ".crt");
         if (crtcontent==null||crtcontent.equals("")){
-            return new Result("证书生成失败",400,"error");
+            return new Result("error",400,"证书生成失败");
         }
 
         return new Result("success",200,"注册成功");

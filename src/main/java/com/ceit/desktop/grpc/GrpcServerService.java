@@ -60,7 +60,8 @@ public class GrpcServerService extends CaCenterGrpc.CaCenterImplBase {
     }
 
     public void softRegister(SoftRegisterRequest request, StreamObserver<SoftRegisteReply> replyStreamObserver){
-        Result result = certRequestService.soft_Register(request);
+        String sha256hash = request.getSoftHash();
+        Result result = certRequestService.softRegister(sha256hash);
         System.out.println("result: " + result.toString());
         replyStreamObserver.onNext(SoftRegisteReply.newBuilder().setMsg(result.getMsg()).setResult((String) result.getData()).setStatus(result.getCode()).build());
         replyStreamObserver.onCompleted();
