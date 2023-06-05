@@ -46,7 +46,7 @@ message DeviceUnRegisteReply {
 }
 
 //软件注册
-message SoftRegisterRequest {
+message  SoftRegisterRequest{
   string soft_Hash = 1;
 }
 

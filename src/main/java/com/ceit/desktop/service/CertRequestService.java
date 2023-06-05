@@ -54,12 +54,7 @@ public class CertRequestService {
         //获取HASH值
         String username = serial.substring(0,32);
 
-        int flag = 0;
-        try {
-            flag = Integer.parseInt(fileConfigUtil.load("desktop.properties","certApply"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        int flag = 0;//Integer.parseInt(System.getProperty("certApply"));
         if (flag == 0 ){
             //管理员同意注册
             if (is_handle ==1 ){
@@ -81,9 +76,9 @@ public class CertRequestService {
                 //生成私钥命令
                 String createKeyPar =gmssl + " ecparam -genkey -name sm2p256v1 -out " + exeDir   + username + ".key";
                 //生成请求文件命令
-                String createCSRPar =gmssl + " req -new -sm3 -key "+ exeDir +username+".key -out "+ exeDir +username+".req -subj /CN="+username+"/C=CN/ST=BJ/L=NCEPU/O=CEIT/OU=CEIT";
+                String createCSRPar =gmssl + " req -new -sm3 -key \""+ exeDir +username+".key\" -out \""+ exeDir +username+".req\" -subj /CN="+username+"/C=CN/ST=BJ/L=NCEPU/O=CEIT/OU=CEIT";
                 //生成证书命令
-                String createCERPar = gmssl + " ca -md sm3 -in "+ exeDir +username+".req -out "+ exeDir +username+".crt -days 3650 -batch";
+                String createCERPar = gmssl + " ca -md sm3 -in \""+ exeDir +username+".req\" -out "+ exeDir +username+".crt -days 3650 -batch";
                 //生成私钥
                 CommandUtil.exeCommand(createKeyPar);
                 String pkiKeycontent = FileUtil.readFile(exeDir + username + ".key");
@@ -108,18 +103,18 @@ public class CertRequestService {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String cert_time = simpleDateFormat.format(date);
 
-                List<Map<String,Object>> list = jdbcUtil.executeQuery("SELECT time FROM unregister_device where device_id=?",serial);
+                List<Map<String,Object>> list = jdbcUtil.executeQuery("SELECT time FROM dev_unregister where dev_hash=?",serial);
                 Date dev_reg_time = null;
                 for (Map map:list){
                     dev_reg_time = (Date) map.get("time");
                 }
-                jdbcUtil.executeUpdate("delete from unregister_device where device_id = ?",serial);
+                jdbcUtil.executeUpdate("delete from dev_unregister where dev_hash = ?",username);
 //            jdbcUtil.executeUpdate("insert into radcheck (username,attribute,op,`value`) values (?,'Cleartext-Password',':=',?) ",username,username.substring(0,16));
-                jdbcUtil.executeUpdate("insert into device_cert (username,tran_id,cert_name,cert_time,device_mac,dev_name,org_id,dev_reg_time,dev_id,device_ip,dev_reg_status) values (?,?,?,?,?,?,?,?,?,?,?) ",
-                        username,tranId,serial+".crt",cert_time,device_mac,dev_name,org_id,dev_reg_time,username,device_ip,"1");
+                jdbcUtil.executeUpdate("insert into dev_cert (username,tran_id,cert_name,cert_time,dev_mac,dev_name,org_id,dev_reg_time,dev_hash,dev_ip,dev_reg_status,cert_csr,cert_cst,cert_key,cert_issuer) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
+                        username,tranId,serial+".crt",cert_time,device_mac,dev_name,org_id,dev_reg_time,username,device_ip,"1",exeDir + username + ".req",exeDir,exeDir + username + ".key","cacenter");
                 return new Result("证书生成成功",200,"success");
             } else {
-                jdbcUtil.executeUpdate("update unregister_device set status = 2 where device_id = ? ",serial);
+                jdbcUtil.executeUpdate("update dev_unregister set status = 2 where dev_hash = ? ",username);
                 return new Result("已拒绝",200,"failed");
             }
         } else {
@@ -163,7 +158,6 @@ public class CertRequestService {
                  * String test = "{\"data\":\"{\\\"cert\\\":\\\"MIIC7jCCApKgAwIBAgISIAllltHkeFC8lDSYN1Ght+qpMAwGCCqBHM9VAYN1BQAwPzELMAkGA1UEBhMCQ04xDTALBgNVBAoMBFNHQ0MxDTALBgNVBAsMBEVQUkkxEjAQBgNVBAMMCVNNMi1DRVNISTAeFw0yMTA0MzAwMTM0MTRaFw0yMTA3MjkwMTM0MTRaMFExDTALBgNVBAMMBDA1MjIxCzAJBgNVBAYTAkNOMQswCQYDVQQIDAJHRDELMAkGA1UEBwwCR1oxCzAJBgNVBAoMAlNHMQwwCgYDVQQLDANDU0cwWTATBgcqhkjOPQIBBggqgRzPVQGCLQNCAATlNFyH4RV/xxFDSaFQqFngdkT43Cgl1li7wPaXBO3RMcSVhB7pURFr8W+9006Cb8lLbq+2UZ5ccHVgUXc0c5AAo4IBWDCCAVQwCwYDVR0PBAQDAgbAMAkGA1UdEwQCMAAwgZ0GA1UdHwSBlTCBkjBDoEGgP4Y9aHR0cDovLzEwLjg1LjE4My4zODoxOTA5MC9jcmwvU00yTkVXU0VDT05EL1NNMk5FV1NFQ09ORF8wLmNybDBLoEmgR4ZFaHR0cDovLzEwLjg1LjE4My4zODoxOTA5MC9jcmwvU00yTkVXU0VDT05EL2luYy9TTTJORVdTRUNPTkRfaW5jXzAuY3JsMB0GA1UdDgQWBBQwStr0cdS9tLsiEeBeCHwPNU1gCjAfBgNVHSMEGDAWgBQLwwLdX1ZtsGuCHA9vZffORUWhvzBaBgNVHSAEUzBRME8GCiqBHIbvMgYEAQEwQTA/BggrBgEFBQcCARYzaHR0cDovLzEwLjg1LjE4My4zODoxOTA5MC9jcHMvU00yTkVXU0VDT05EL2Nwcy5odG1sMAwGCCqBHM9VAYN1BQADSAAwRQIgX55+qvxNDFcSfHpM+2wQ9u7+/SfhXBIDgZJryoMuzUACIQC2M+chbn8K6pMdO0r7+MWajLM+joV5uwulEB6b9l5zog==\\\",\\\"certSn\\\":\\\"20096596d1e47850bc9434983751a1b7eaa9\\\"}\",\"message\":\"success\",\"status\":\"0\",\"transId\":\"149184c9\"}";
                  */
 
-
                 ResultJson res;
                 try {
                     res = access.handleCertRequest(certReq);
@@ -193,26 +187,76 @@ public class CertRequestService {
                     String update_time = simpleDateFormat.format(date);
 
                     //修改证书表
-                    String sql = "insert into device_cert(dev_id,dev_name,username,device_mac,device_ip,org_id,dev_reg_time,dev_reg_status,tran_id,cert_name,cert_time,cert_sn,cert_csr,cert_cst,cert_key,cert_issuer,start_time,end_time) value (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    String sql = "insert into dev_cert(dev_hash,dev_name,username,dev_mac,dev_ip,org_id,dev_reg_time,dev_reg_status,tran_id,cert_name,cert_time,cert_sn,cert_csr,cert_cst,cert_key,cert_issuer,start_time,end_time) value (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                     jdbcUtil.executeUpdate(sql, username,dev_name,username,device_mac,device_ip,org_id,update_time,"1",tranId,username + ".crt",update_time,certSn, certReqPath + username + ".req", certFilePath + username + ".crt", priKeyPath + username + ".key",
                             message.get("issuer"), message.get("dateBefore"), message.get("dateAfter"));
                     //删除未注册设备中的记录
-                    String sql1 = "delete from unregister_device where device_id = ?";
-                    jdbcUtil.executeUpdate(sql1, serial);
+                    String sql1 = "delete from dev_unregister where dev_hash = ?";
+                    jdbcUtil.executeUpdate(sql1, username);
                     return new Result("证书签发成功", 200, "success");
                 } else  {
-                    String sql3 = "update unregister_device set remarks = '证书签发失败' where device_id = ?";
-                    jdbcUtil.executeUpdate(sql3, serial);
+                    String sql3 = "update dev_unregister set remarks = '证书签发失败' where dev_hash = ?";
+                    jdbcUtil.executeUpdate(sql3, username);
                     return new Result("证书签发失败，请重新审核", 200, "error");
                 }
             } else {
-                String sql4 = "update unregister_device set status = 2 where device_id = ?";
-                jdbcUtil.executeUpdate(sql4,serial);
-                return new Result("已拒绝", 200, "success");
+                String sql4 = "update dev_unregister set status = 2 where dev_hash = ?";
+                jdbcUtil.executeUpdate(sql4,username);
+                return new Result("已拒绝", 200, "failed");
             }
         }
 
 
+    }
+
+    public Result dec_Cert_Req_selfCA(DeviceRegisterRequest request){
+        int is_handle = request.getIsHandle();
+        String serial = request.getSerial();
+        String dev_name = request.getDevName();
+        String org_id = request.getOrgId();
+        String device_ip = request.getDeviceIp();
+        //获取HASH值
+        String username = serial.substring(0,32);
+
+        //随机生成流水号
+        String tranId = idFactory.createTransId();
+        //设备mac
+        String device_mac = serial.substring(32);
+
+        int ret = CAUtil.gen_CA(username);
+        if(ret == 0) return new Result("签发证书出错",200,"error");
+
+        String sql1 = "delete from unregister_device_copy1 where device_id = ?";
+        jdbcUtil.executeUpdate(sql1, serial);
+
+        String[] certInfo = CAUtil.get_CA(username);
+        if(certInfo == null) return new Result("解析证书失败",200,"get_CA failed");
+
+        Date date_start = null;
+        Date date_end = null;
+        try{
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            date_start = ft.parse(certInfo[4]);
+            date_end = ft.parse(certInfo[5]);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        List<Map<String,Object>> list = jdbcUtil.executeQuery("SELECT time FROM unregister_device_copy1 where device_id=?",serial);
+        Date dev_reg_time = null;
+        for (Map map:list){
+            dev_reg_time = (Date) map.get("time");
+        }
+
+        String sql = "insert into device_cert_cp1 (dev_id,dev_name,username,device_mac,device_ip,org_id,dev_reg_time,dev_reg_status,tran_id,cert_name,cert_time," +
+                "cert_sn,cert_csr,cert_cst,cert_key,cert_issuer,start_time,end_time) " +
+                "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        int res = jdbcUtil.executeUpdate(sql,username,dev_name,username,device_mac,device_ip,org_id,dev_reg_time,"1",tranId,username + "cer.pem",date_start,
+                certInfo[1],username + "csr.pem","/home/workspace_yzk/CA_CEIT/newcers",username + "key.pem",certInfo[3],date_start,date_end);
+
+        return new Result("生成证书",200,res);
     }
 
 //    终端注册撤销
@@ -222,18 +266,19 @@ public class CertRequestService {
         //删除radcheck中记录（已认证记录）
         jdbcUtil.executeUpdate("delete from radcheck where username = ?",username);
         //删除device_cert中的记录（已认证设备详细信息）
-        jdbcUtil.executeUpdate("delete from device_cert where username = ?",username);
+        jdbcUtil.executeUpdate("delete from dev_cert where username = ?",username);
         //将设备重新添加回unregister_device中（未认证记录）
         Date date = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = simpleDateFormat.format(date);
         String device_id = username+device_mac;
-        int ret = jdbcUtil.executeUpdate("insert into unregister_device (device_id,time) values (?,?) ",device_id,time);
+        int ret = jdbcUtil.executeUpdate("insert into dev_unregister (dev_hash,time) values (?,?) ",username,time);
         return new Result("已成功撤销",200,"success");
     }
 
     //软件注册
-    public Result softRegister(String soft_hash) {
+    public Result soft_Register(SoftRegisterRequest request) {
+        String soft_hash = request.getSoftHash();
         //判断软件是否已在软件仓库
         String selectSql = "select sw_name FROM soft_cert where sw_hash = ?";
         List<Map<String,Object>> list = jdbcUtil.executeQuery(selectSql,soft_hash);
@@ -259,8 +304,6 @@ public class CertRequestService {
         String createCSRPar =gmssl + " req -new -sm3 -key \""+ exeDir +soft_hash+".key\" -out \""+ exeDir +soft_hash+".req\" -subj /CN="+soft_hash+"/C=CN/ST=BJ/L=NCEPU/O=CEIT/OU=CEIT";
         //生成证书命令
         String createCERPar = gmssl + " ca -md sm3 -in \""+ exeDir +soft_hash+".req\" -out "+ exeDir +soft_hash+".crt -days 3650 -batch";
-
-
         //生成私钥
         CommandUtil.exeCommand(createKeyPar);
         String pkiKeycontent = FileUtil.readFile(exeDir + soft_hash + ".key");
@@ -283,23 +326,24 @@ public class CertRequestService {
         return new Result("success",200,"注册成功");
     }
 
+
     //硬件认证
     public Result dev_Check(String hashCode,String deviceIp) {
         //首先使用硬件hash值查询
-        String sql = "SELECT * FROM `device_cert` WHERE dev_id = ?";
+        String sql = "SELECT * FROM `dev_cert` WHERE dev_hash = ?";
         //"5F8934639BDF36D1B35BC04018DB1EF2"
         List<Map<String,Object>> list=jdbcUtil.executeQuery(sql,hashCode);
 
         //如果该硬件hash值不存在
         if (list.size()==0){
             //使用IP地址查询，判断硬件hash是否被修改
-            String sqlForIp = "SELECT * FROM device_cert WHERE device_ip = ?";
+            String sqlForIp = "SELECT * FROM dev_cert WHERE dev_ip = ?";
             List<Map<String,Object>> listForIp=jdbcUtil.executeQuery(sqlForIp,deviceIp);
             if (listForIp.size()==0){
                 return new Result("error",100,"该设备不存在");
             } else {
                 Map<String,Object> mapForIP = listForIp.get(0);
-                String insertForIP = "insert into dev_check_info(device_name,device_ip,time,type,description) values(?,?,?,?,?)";
+                String insertForIP = "insert into dev_check_info(dev_name,dev_ip,time,type,description) values(?,?,?,?,?)";
                 Date date = new Date();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String time = simpleDateFormat.format(date);
@@ -311,16 +355,16 @@ public class CertRequestService {
         //如果硬件hash值存在
         for (Map map:list){
             //当终端hash值存在时，判断是否终端是否是首次认证
-            if (map.get("device_ip") == null){
+            if (map.get("dev_ip") == null){
                 //首次认证时，需要将当前IP做为终端IP
-                String updateIP = "update device_cert set device_ip = ? where dev_id =?";
+                String updateIP = "update dev_cert set dev_ip = ? where dev_hash =?";
                 jdbcUtil.executeUpdate(updateIP,deviceIp,hashCode);
             } else {
                 //非首次认证，判断终端的硬件hash值与终端IP是否一致
-                if (map.get("device_ip")==deviceIp || map.get("device_ip").equals(deviceIp)){
+                if (map.get("dev_ip")==deviceIp || map.get("dev_ip").equals(deviceIp)){
                     return new Result("seccess",200,"认证成功");
                 } else {
-                    String insertForIP = "insert into dev_check_info(device_name,device_ip,time,type,description) values(?,?,?,?,?)";
+                    String insertForIP = "insert into dev_check_info(dev_name,dev_ip,time,type,description) values(?,?,?,?,?)";
                     Date date = new Date();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String time = simpleDateFormat.format(date);

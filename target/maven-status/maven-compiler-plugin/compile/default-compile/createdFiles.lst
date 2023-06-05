@@ -49,6 +49,7 @@ com\ceit\desktop\grpc\caCenter\DeviceCheckReplyOrBuilder.class
 com\ceit\desktop\grpc\caCenter\SoftRegisteReplyOrBuilder.class
 com\ceit\desktop\grpc\caCenter\SoftRegisteReply.class
 com\ceit\desktop\grpc\caCenter\DeviceCheckReply$1.class
+com\ceit\desktop\utils\CAUtil.class
 com\ceit\desktop\grpc\caCenter\DeviceRegisteReply$Builder.class
 com\ceit\desktop\grpc\caCenter\DeviceRegisteReply.class
 com\ceit\desktop\grpc\caCenter\SoftRegisteReply$Builder.class

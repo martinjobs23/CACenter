@@ -11,7 +11,6 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
-
         GrpcServerService grpcServerService = new GrpcServerService();
         try{
             grpcServerService.startGrpc();
