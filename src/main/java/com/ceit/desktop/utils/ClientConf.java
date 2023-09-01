@@ -1,7 +1,8 @@
 package com.ceit.desktop.utils;
 
-import com.ceit.ioc.annotations.Component;
+//import com.ceit.ioc.annotations.Component;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -12,20 +13,19 @@ import java.util.List;
  * @Author hello world
  * @DATE 2021/5/25  22:44
  **/
-@Component
+//@Component
 public class ClientConf {
 
 	private String path;
 
 	private String packageFilter;
+	private FileConfigUtil fileConfigUtil = new FileConfigUtil();
 
 	//证书文件生成
-	private String certFilePath = System.getProperty("certFile.path");
+	private String certFilePath = fileConfigUtil.load("desktop.properties","certFile.path");
 
 	//证书文件生成
 	private String keyFilePath;
-
-
 
 
 	//ccd虚拟网卡IP配置  开头结尾
@@ -41,6 +41,9 @@ public class ClientConf {
 
 	private static final String certEnd = "-----END CERTIFICATE-----\n";
 
+	public ClientConf() throws IOException {
+	}
+
 	/**
 	 *
 	 * @param commonName 拿commonName作为文件名
@@ -48,7 +51,7 @@ public class ClientConf {
 	 * @return 证书内容
 	 * 写文件
 	 */
-	public String genCertFile(String commonName, String certContent) {
+	public String genCertFile (String commonName, String certContent) {
 		String overName = commonName + ".crt";
 		//设置系统换行符 默认linux下
 		String lineSeparator = System.getProperty("line.separator", "\n");

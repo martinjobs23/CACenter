@@ -15,10 +15,10 @@ public final class CAProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_caCenter_DeviceRegisterRequest_descriptor;
+    internal_static_caCenter_DevRegisterRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_caCenter_DeviceRegisterRequest_fieldAccessorTable;
+      internal_static_caCenter_DevRegisterRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_caCenter_DeviceRegisteReply_descriptor;
   static final 
@@ -63,42 +63,42 @@ public final class CAProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014device.proto\022\010caCenter\"o\n\025DeviceRegist" +
-      "erRequest\022\021\n\tis_handle\030\001 \001(\005\022\016\n\006serial\030\002" +
-      " \001(\t\022\020\n\010dev_name\030\003 \001(\t\022\016\n\006org_id\030\004 \001(\t\022\021" +
-      "\n\tdevice_ip\030\005 \001(\t\"=\n\022DeviceRegisteReply\022" +
-      "\014\n\004code\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\022\014\n\004data\030\003 \001(\t" +
-      "\"?\n\027DeviceUnRegisterRequest\022\020\n\010username\030" +
-      "\001 \001(\t\022\022\n\ndevica_mac\030\002 \001(\t\"C\n\024DeviceUnReg" +
-      "isteReply\022\016\n\006status\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\022\016" +
-      "\n\006result\030\003 \001(\t\"(\n\023SoftRegisterRequest\022\021\n" +
-      "\tsoft_Hash\030\001 \001(\t\"?\n\020SoftRegisteReply\022\016\n\006" +
-      "status\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\022\016\n\006result\030\003 \001(" +
-      "\t\";\n\022DeviceCheckRequest\022\022\n\ndeviceHash\030\001 " +
-      "\001(\t\022\021\n\tdevice_ip\030\002 \001(\t\"?\n\020DeviceCheckRep" +
-      "ly\022\016\n\006status\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\022\016\n\006resul" +
-      "t\030\003 \001(\t2\316\002\n\010CaCenter\022Q\n\016DeviceRegister\022\037" +
-      ".caCenter.DeviceRegisterRequest\032\034.caCent" +
-      "er.DeviceRegisteReply\"\000\022W\n\020DeviceUnRegis" +
-      "ter\022!.caCenter.DeviceUnRegisterRequest\032\036" +
-      ".caCenter.DeviceUnRegisteReply\"\000\022K\n\014Soft" +
-      "Register\022\035.caCenter.SoftRegisterRequest\032" +
-      "\032.caCenter.SoftRegisteReply\"\000\022I\n\013DeviceC" +
-      "heck\022\034.caCenter.DeviceCheckRequest\032\032.caC" +
-      "enter.DeviceCheckReply\"\000B1\n\036com.ceit.des" +
-      "ktop.grpc.caCenterB\007CAProtoP\001\242\002\003HLWb\006pro" +
-      "to3"
+      "\n\014device.proto\022\010caCenter\"\200\001\n\022DevRegister" +
+      "Request\022\021\n\tis_handle\030\001 \001(\005\022\016\n\006serial\030\002 \001" +
+      "(\t\022\020\n\010dev_name\030\003 \001(\t\022\016\n\006org_id\030\004 \001(\t\022\021\n\t" +
+      "device_ip\030\005 \001(\t\022\022\n\ndevice_mac\030\006 \001(\t\"=\n\022D" +
+      "eviceRegisteReply\022\014\n\004code\030\001 \001(\005\022\013\n\003msg\030\002" +
+      " \001(\t\022\014\n\004data\030\003 \001(\t\"?\n\027DeviceUnRegisterRe" +
+      "quest\022\020\n\010username\030\001 \001(\t\022\022\n\ndevica_mac\030\002 " +
+      "\001(\t\"C\n\024DeviceUnRegisteReply\022\016\n\006status\030\001 " +
+      "\001(\005\022\013\n\003msg\030\002 \001(\t\022\016\n\006result\030\003 \001(\t\"(\n\023Soft" +
+      "RegisterRequest\022\021\n\tsoft_Hash\030\001 \001(\t\"?\n\020So" +
+      "ftRegisteReply\022\016\n\006status\030\001 \001(\005\022\013\n\003msg\030\002 " +
+      "\001(\t\022\016\n\006result\030\003 \001(\t\";\n\022DeviceCheckReques" +
+      "t\022\022\n\ndeviceHash\030\001 \001(\t\022\021\n\tdevice_ip\030\002 \001(\t" +
+      "\"?\n\020DeviceCheckReply\022\016\n\006status\030\001 \001(\005\022\013\n\003" +
+      "msg\030\002 \001(\t\022\016\n\006result\030\003 \001(\t2\313\002\n\010CaCenter\022N" +
+      "\n\016DeviceRegister\022\034.caCenter.DevRegisterR" +
+      "equest\032\034.caCenter.DeviceRegisteReply\"\000\022W" +
+      "\n\020DeviceUnRegister\022!.caCenter.DeviceUnRe" +
+      "gisterRequest\032\036.caCenter.DeviceUnRegiste" +
+      "Reply\"\000\022K\n\014SoftRegister\022\035.caCenter.SoftR" +
+      "egisterRequest\032\032.caCenter.SoftRegisteRep" +
+      "ly\"\000\022I\n\013DeviceCheck\022\034.caCenter.DeviceChe" +
+      "ckRequest\032\032.caCenter.DeviceCheckReply\"\000B" +
+      "1\n\036com.ceit.desktop.grpc.caCenterB\007CAPro" +
+      "toP\001\242\002\003HLWb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_caCenter_DeviceRegisterRequest_descriptor =
+    internal_static_caCenter_DevRegisterRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_caCenter_DeviceRegisterRequest_fieldAccessorTable = new
+    internal_static_caCenter_DevRegisterRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_caCenter_DeviceRegisterRequest_descriptor,
-        new java.lang.String[] { "IsHandle", "Serial", "DevName", "OrgId", "DeviceIp", });
+        internal_static_caCenter_DevRegisterRequest_descriptor,
+        new java.lang.String[] { "IsHandle", "Serial", "DevName", "OrgId", "DeviceIp", "DeviceMac", });
     internal_static_caCenter_DeviceRegisteReply_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_caCenter_DeviceRegisteReply_fieldAccessorTable = new

@@ -20,7 +20,7 @@ public class GrpcServerService extends CaCenterGrpc.CaCenterImplBase {
 
     CertRequestService certRequestService = new CertRequestService();
 
-    public GrpcServerService() {
+    public GrpcServerService() throws IOException {
     }
 
     public void startGrpc() throws IOException, InterruptedException {
@@ -35,11 +35,16 @@ public class GrpcServerService extends CaCenterGrpc.CaCenterImplBase {
     }
 
     //终端注册接口
-    public void deviceRegister(DeviceRegisterRequest request, StreamObserver<DeviceRegisteReply> replyStreamObserver){
-        Result result = certRequestService.dev_Cert_Req(request);
+    public void deviceRegister(DevRegisterRequest request, StreamObserver<DeviceRegisteReply> replyStreamObserver) {
+//        try {
+            Result result = certRequestService.dev_Cert_Req(request);
+            replyStreamObserver.onNext(DeviceRegisteReply.newBuilder().setCode(result.getCode()).setMsg(result.getMsg()).setData(result.getData().toString()).build());
+            replyStreamObserver.onCompleted();
+//        } catch (IOException e) {
+//        e.printStackTrace();
+//    }
         //Result result1 = certRequestService.dec_Cert_Req_selfCA(request);
-        replyStreamObserver.onNext(DeviceRegisteReply.newBuilder().setCode(result.getCode()).setMsg(result.getMsg()).setData(result.getData().toString()).build());
-        replyStreamObserver.onCompleted();
+
     }
 
     //终端注册撤销接口
@@ -60,12 +65,16 @@ public class GrpcServerService extends CaCenterGrpc.CaCenterImplBase {
         replyStreamObserver.onCompleted();
     }
 
-    public void softRegister(SoftRegisterRequest request, StreamObserver<SoftRegisteReply> replyStreamObserver){
-        Result result = certRequestService.soft_Register(request);
-        System.out.println("result: " + result.toString());
-        replyStreamObserver.onNext(SoftRegisteReply.newBuilder().setMsg(result.getMsg()).setResult((String) result.getData()).setStatus(result.getCode()).build());
-        replyStreamObserver.onCompleted();
+    public void softRegister(SoftRegisterRequest request, StreamObserver<SoftRegisteReply> replyStreamObserver) {
+//        try {
+            Result result = certRequestService.soft_Register(request);
+            System.out.println("result: " + result.toString());
+            replyStreamObserver.onNext(SoftRegisteReply.newBuilder().setMsg(result.getMsg()).setResult((String) result.getData()).setStatus(result.getCode()).build());
+            replyStreamObserver.onCompleted();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
     }
-
-
 }

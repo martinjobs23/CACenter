@@ -27,27 +27,27 @@ public final class CaCenterGrpc {
   public static final String SERVICE_NAME = "caCenter.CaCenter";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest,
+  private static volatile io.grpc.MethodDescriptor<com.ceit.desktop.grpc.caCenter.DevRegisterRequest,
       com.ceit.desktop.grpc.caCenter.DeviceRegisteReply> getDeviceRegisterMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "DeviceRegister",
-      requestType = com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest.class,
+      requestType = com.ceit.desktop.grpc.caCenter.DevRegisterRequest.class,
       responseType = com.ceit.desktop.grpc.caCenter.DeviceRegisteReply.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest,
+  public static io.grpc.MethodDescriptor<com.ceit.desktop.grpc.caCenter.DevRegisterRequest,
       com.ceit.desktop.grpc.caCenter.DeviceRegisteReply> getDeviceRegisterMethod() {
-    io.grpc.MethodDescriptor<com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest, com.ceit.desktop.grpc.caCenter.DeviceRegisteReply> getDeviceRegisterMethod;
+    io.grpc.MethodDescriptor<com.ceit.desktop.grpc.caCenter.DevRegisterRequest, com.ceit.desktop.grpc.caCenter.DeviceRegisteReply> getDeviceRegisterMethod;
     if ((getDeviceRegisterMethod = CaCenterGrpc.getDeviceRegisterMethod) == null) {
       synchronized (CaCenterGrpc.class) {
         if ((getDeviceRegisterMethod = CaCenterGrpc.getDeviceRegisterMethod) == null) {
           CaCenterGrpc.getDeviceRegisterMethod = getDeviceRegisterMethod =
-              io.grpc.MethodDescriptor.<com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest, com.ceit.desktop.grpc.caCenter.DeviceRegisteReply>newBuilder()
+              io.grpc.MethodDescriptor.<com.ceit.desktop.grpc.caCenter.DevRegisterRequest, com.ceit.desktop.grpc.caCenter.DeviceRegisteReply>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeviceRegister"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest.getDefaultInstance()))
+                  com.ceit.desktop.grpc.caCenter.DevRegisterRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.ceit.desktop.grpc.caCenter.DeviceRegisteReply.getDefaultInstance()))
               .setSchemaDescriptor(new CaCenterMethodDescriptorSupplier("DeviceRegister"))
@@ -204,7 +204,7 @@ public final class CaCenterGrpc {
      *终端注册
      * </pre>
      */
-    public void deviceRegister(com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest request,
+    public void deviceRegister(com.ceit.desktop.grpc.caCenter.DevRegisterRequest request,
         io.grpc.stub.StreamObserver<com.ceit.desktop.grpc.caCenter.DeviceRegisteReply> responseObserver) {
       asyncUnimplementedUnaryCall(getDeviceRegisterMethod(), responseObserver);
     }
@@ -245,7 +245,7 @@ public final class CaCenterGrpc {
             getDeviceRegisterMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest,
+                com.ceit.desktop.grpc.caCenter.DevRegisterRequest,
                 com.ceit.desktop.grpc.caCenter.DeviceRegisteReply>(
                   this, METHODID_DEVICE_REGISTER)))
           .addMethod(
@@ -292,7 +292,7 @@ public final class CaCenterGrpc {
      *终端注册
      * </pre>
      */
-    public void deviceRegister(com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest request,
+    public void deviceRegister(com.ceit.desktop.grpc.caCenter.DevRegisterRequest request,
         io.grpc.stub.StreamObserver<com.ceit.desktop.grpc.caCenter.DeviceRegisteReply> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getDeviceRegisterMethod(), getCallOptions()), request, responseObserver);
@@ -351,7 +351,7 @@ public final class CaCenterGrpc {
      *终端注册
      * </pre>
      */
-    public com.ceit.desktop.grpc.caCenter.DeviceRegisteReply deviceRegister(com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest request) {
+    public com.ceit.desktop.grpc.caCenter.DeviceRegisteReply deviceRegister(com.ceit.desktop.grpc.caCenter.DevRegisterRequest request) {
       return blockingUnaryCall(
           getChannel(), getDeviceRegisterMethod(), getCallOptions(), request);
     }
@@ -407,7 +407,7 @@ public final class CaCenterGrpc {
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ceit.desktop.grpc.caCenter.DeviceRegisteReply> deviceRegister(
-        com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest request) {
+        com.ceit.desktop.grpc.caCenter.DevRegisterRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getDeviceRegisterMethod(), getCallOptions()), request);
     }
@@ -469,7 +469,7 @@ public final class CaCenterGrpc {
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
         case METHODID_DEVICE_REGISTER:
-          serviceImpl.deviceRegister((com.ceit.desktop.grpc.caCenter.DeviceRegisterRequest) request,
+          serviceImpl.deviceRegister((com.ceit.desktop.grpc.caCenter.DevRegisterRequest) request,
               (io.grpc.stub.StreamObserver<com.ceit.desktop.grpc.caCenter.DeviceRegisteReply>) responseObserver);
           break;
         case METHODID_DEVICE_UN_REGISTER:

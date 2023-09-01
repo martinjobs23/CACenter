@@ -192,6 +192,46 @@ public class CAUtil {
         return ret;
     }
 
+    //返回string数组 0 1 2 3 4 5 分别是  版本号  序列号  使用者  颁发者  颁发日期 过期日期
+    public static String[] get_CA(String hash,String path){
+        //String path = workspace + "/newcers/" + hash +".cer";
+        FileInputStream in = null;
+        String[] ret = new String[6];
+        try{
+            // 引入BC库
+            Security.addProvider(new BouncyCastleProvider());
+            // 使用BC解析X.509证书
+            CertificateFactory CF = CertificateFactory.getInstance("X.509", "BC"); // 从证书工厂中获取X.509的单例类
+            in = new FileInputStream(path); // 将本地证书读入文件流
+            Certificate C = CF.generateCertificate(in);  // 将文件流的证书转化为证书类
+            X509Certificate cer = (X509Certificate)C;
+            ret[0] = Integer.toString(cer.getVersion());
+            ret[1] = cer.getSerialNumber().toString();
+            ret[2] = cer.getSubjectDN().toString();
+            ret[3] = cer.getIssuerDN().toString();
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String time = ft.format(cer.getNotBefore());
+            ret[4] = time;
+            time = ft.format(cer.getNotAfter());
+            ret[5] = time;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        finally {
+            if(in != null) {
+                try{
+                    in.close();
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return ret;
+    }
+
     public static String[] get_CA(){
         String path = "C:\\Users\\yzk\\Desktop\\RTMRTYUIOPLKJHGFDSAZXCVBNMQWERAS.cer";
         FileInputStream in = null;

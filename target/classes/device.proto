@@ -9,7 +9,7 @@ package caCenter;
 
 service CaCenter {
   //终端注册
-  rpc DeviceRegister (DeviceRegisterRequest) returns (DeviceRegisteReply) {}
+  rpc DeviceRegister (DevRegisterRequest) returns (DeviceRegisteReply) {}
   //终端注册注销
   rpc DeviceUnRegister (DeviceUnRegisterRequest) returns (DeviceUnRegisteReply) {}
   //软件注册
@@ -19,12 +19,13 @@ service CaCenter {
 }
 
 //终端注册
-message DeviceRegisterRequest {
-  int32 is_handle =1;
+message DevRegisterRequest {
+  int32 is_handle = 1;
   string serial = 2;
   string dev_name = 3;
   string org_id = 4;
   string device_ip = 5;
+  string device_mac = 6;
 }
 
 message DeviceRegisteReply {

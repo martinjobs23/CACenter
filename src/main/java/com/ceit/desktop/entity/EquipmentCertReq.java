@@ -70,7 +70,7 @@ public class EquipmentCertReq {
 		return "equipmentCertSetting{" +
 				"transId='" + transId + '\'' +
 				", serviceCode='" + serviceCode + '\'' +
-				", certRequest='" + certRequest + '\'' +
+				", certRequest(P10)='" + certRequest + '\'' +
 				", raId='" + raId + '\'' +
 				'}';
 	}

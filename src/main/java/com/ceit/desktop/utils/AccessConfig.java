@@ -1,7 +1,7 @@
 package com.ceit.desktop.utils;
 
-
 import com.ceit.desktop.entity.*;
+import com.uccs.CertUtils;
 import com.uccs.Certservice;
 import com.uccs.SessionEncKey;
 import org.slf4j.Logger;
@@ -26,8 +26,8 @@ public class AccessConfig {
 
 	private static SessionEncKey sessionEncKey = SessionEncKey.getInstance();
 
-
 	static long initTime  = 0;
+	static long initP10Time = 0;
 
 
 	public static void initConnect() {
@@ -49,7 +49,18 @@ public class AccessConfig {
 		return Holder.instance;
 	}
 
-
+//	public static void initConnectP10() {
+//		boolean flag = false;
+//		Date date = new Date();
+//		//每30天初始化一次
+//		if (date.getTime()-initP10Time>30*24*3600*100){
+//			flag = connectP10PlatForm();
+//			if (flag){
+//				initP10Time = date.getTime() ;
+//			}
+//			log.info("P10 接口初始化。"+ " flag: "+ flag);
+//		}
+//	}
 
 	/**
 	 * 生成随机业务流水数、完成前置初始化操作
@@ -81,6 +92,35 @@ public class AccessConfig {
 	}
 
 	/**
+	 * P10初始化
+	 * @return 返回是否连接成功
+	 */
+//	public static boolean connectP10PlatForm() {
+//		boolean flag = false;
+//		ResultJson res = null;
+//		try {
+//			String transId = GenerateTransId.getInstance().createTransId();
+//			log.info("transId: "+ transId);
+//			String returnJson = sessionEncKey.initSecureKey(transId);
+//			log.info("前置初始化返回消息： "+ returnJson);
+//			res = JSONObject.parseObject(returnJson, ResultJson.class);
+//			System.out.println("connect res: "+ res);
+//			if(res.getStatus().equals("0")) {
+//				flag = true;
+//				log.info("The front connect to password platform is successful： "+res.getMessage());
+//			} else {
+//				log.info("The front connect to password platform is failed : " +res.getMessage());
+//			}
+//		} catch(RuntimeException e) {
+//			log.info("the Pre-call password platform is failed : "+e.getMessage());
+//		}
+//		catch (Exception e){
+//			e.printStackTrace();
+//		}
+//		return flag;
+//	}
+
+	/**
 	 * 设备证书制作
 	 * @param equipmentCertReq 通过证书请求 P10 生成设备证书，适用于证书在终端设备中的应用
 	 * @return 根据返回的封装类是否为空判断
@@ -97,6 +137,40 @@ public class AccessConfig {
 			System.out.println("returnJson catch");
 			e.printStackTrace();
 			log.info("the Pre-call password platform is failed : {}", e.getMessage());
+		}
+		return res;
+	}
+
+	public ResultJson randomNumber() {
+		ResultJson res = null;
+		String transId = GenerateTransId.getInstance().createTransId();
+		try {
+			String ranLen = "32";
+			String returnJson = Certservice.getInstance().random(transId, ranLen);
+			res = ResultJson.getResult(returnJson);
+			log.info("真随机数生成 {}", res.toString());
+		}  catch(RuntimeException e) {
+			System.out.println("returnJson catch");
+			e.printStackTrace();
+			log.info("随机数生成json异常 : {}", e.getMessage());
+		}
+		return res;
+	}
+
+	public ResultJson timeStampRequest() {
+		ResultJson res = null;
+
+		String requestType = "0";
+		String hashAlgorithm = "0";
+		String inData = null;
+		try {
+			String returnJson = CertUtils.getInstance().createTsRequest(requestType, hashAlgorithm, inData);
+			res = ResultJson.getResult(returnJson);
+			log.info("真随机数生成 {}", res.toString());
+		}  catch(RuntimeException e) {
+			System.out.println("returnJson catch");
+			e.printStackTrace();
+			log.info("随机数生成json异常 : {}", e.getMessage());
 		}
 		return res;
 	}

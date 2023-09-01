@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         GrpcServerService grpcServerService = new GrpcServerService();
         try{
             grpcServerService.startGrpc();
